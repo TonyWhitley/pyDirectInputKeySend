@@ -29,7 +29,7 @@ DirectInputKeyCodeTable = {
     'DIK_Q':          (0x10, 0x51), # Q
     'DIK_W':          (0x11, 0x57), # W
     'DIK_E':          (0x12, 0x45), # E
-    'DIK_R':          (0x13, 0x53), # R
+    'DIK_R':          (0x13, 0x52), # R
     'DIK_T':          (0x14, 0x54), # T
     'DIK_Y':          (0x15, 0x59), # Y
     'DIK_U':          (0x16, 0x55), # U
@@ -41,7 +41,7 @@ DirectInputKeyCodeTable = {
     'DIK_RETURN':     (0x1C, 0x0D), # Enter
     'DIK_LCONTROL':   (0x1D, 0x11), # Ctrl (Left)
     'DIK_A':          (0x1E, 0x41), # A
-    'DIK_S':          (0x1F, 0x54), # S
+    'DIK_S':          (0x1F, 0x53), # S
     'DIK_D':          (0x20, 0x44), # D
     'DIK_F':          (0x21, 0x46), # F
     'DIK_G':          (0x22, 0x47), # G
