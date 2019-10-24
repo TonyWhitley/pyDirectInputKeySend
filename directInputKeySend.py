@@ -224,6 +224,18 @@ def KeycodeToDIK(keycode):
             break
     return _res
 
+def rfKeycodeToDIK(keycode):
+    """
+    Convert am rFactor keycode to a DirectInput Key code
+    If not in table, return keycode as hex
+    """
+    _res = '0x%X' % keycode
+    for dik, entry in DirectInputKeyCodeTable.items():
+        if entry[0] == keycode:
+            _res = dik
+            break
+    return _res
+
 if __name__ == "__main__":
     time.sleep(3)
     PressKey('DIK_Q')   # press Q
