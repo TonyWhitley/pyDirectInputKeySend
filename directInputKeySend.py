@@ -35,7 +35,7 @@ DirectInputKeyCodeTable = {
     'DIK_U':          (0x16, 0x55), # U
     'DIK_I':          (0x17, 0x49), # I
     'DIK_O':          (0x18, 0x4F), # O
-    'DIK_P':          (0x19, 0x51), # P
+    'DIK_P':          (0x19, 0x50), # P
     'DIK_LBRACKET':   (0x1A, 0xDB), # [
     'DIK_RBRACKET':   (0x1B, 0xDD), # ]
     'DIK_RETURN':     (0x1C, 0x0D), # Enter
@@ -52,7 +52,7 @@ DirectInputKeyCodeTable = {
     'DIK_SEMICOLON':  (0x27, 0xBA), # ;
     'DIK_APOSTROPHE': (0x28, 0xC0), #
     'DIK_GRAVE':      (0x29, 0xDF), # `
-    'DIK_LSHIFT':     (0x2A, 0x10), # Shift (Left)
+    'DIK_LSHIFT':     (0x2A, 0xA0), # Shift (Left)
     'DIK_BACKSLASH':  (0x2B, 0xDC), # \
     'DIK_Z':          (0x2C, 0x5A), # Z
     'DIK_X':          (0x2D, 0x58), # X
@@ -60,11 +60,11 @@ DirectInputKeyCodeTable = {
     'DIK_V':          (0x2F, 0x56), # V
     'DIK_B':          (0x30, 0x42), # B
     'DIK_N':          (0x31, 0x4E), # N
-    'DIK_M':          (0x32, 0x4F), # M
+    'DIK_M':          (0x32, 0x4D), # M
     'DIK_COMMA':      (0x33, 0xBC), # "# "
     'DIK_PERIOD':     (0x34, 0xBE), # .
     'DIK_SLASH':      (0x35, 0xBF), # /
-    'DIK_RSHIFT':     (0x36, 0x0), # Shift (Right)
+    'DIK_RSHIFT':     (0x36, 0xA1), # Shift (Right)
     'DIK_MULTIPLY':   (0x37, 0x6A), # * (Numpad)
     'DIK_LMENU':      (0x38, 0x12), # Alt (Left)
     'DIK_SPACE':      (0x39, 0x20), # Space
@@ -123,7 +123,7 @@ DirectInputKeyCodeTable = {
     'DIK_UP':         (0xC8, 0x26), # Cursor up
     'DIK_PRIOR':      (0xC9, 0x21), # Page Up
     'DIK_LEFT':       (0xCB, 0x25), # Cursor left
-    'DIK_RIGHT':      (0xCD, 0x027), # Cursor right
+    'DIK_RIGHT':      (0xCD, 0x27), # Cursor right
     'DIK_END':        (0xCF, 0x23), # End
     'DIK_DOWN':       (0xD0, 0x28), # Cursor down
     'DIK_NEXT':       (0xD1, 0x22), # Page Down
@@ -224,8 +224,84 @@ def KeycodeToDIK(keycode):
             break
     return _res
 
+def rfKeycodeToDIK(keycode):
+    """
+    Convert an rFactor keycode to a DirectInput Key code
+    If not in table, return keycode as hex
+    """
+    _res = '0x%X' % keycode
+    for dik, entry in DirectInputKeyCodeTable.items():
+        if entry[0] == keycode:
+            _res = dik
+            break
+    return _res
+
 if __name__ == "__main__":
     time.sleep(3)
     PressKey('DIK_Q')   # press Q
     time.sleep(.05)
     ReleaseKey('DIK_Q') # release Q
+
+
+    from pynput import keyboard
+
+    kc = keyboard.Controller()
+    def on_press(key):
+        try:
+            #print('alphanumeric key {0} pressed'.format(
+            #    key.char))
+            print(KeycodeToDIK(key.vk))
+            kc.press(key)
+
+        except AttributeError:
+            #print('special key {0} pressed'.format(
+            #   key))
+            print(KeycodeToDIK(key.value.vk))
+            kc.press(key)
+
+    def on_release(key):
+        #print('{0} released'.format(
+        #    key))
+        if key == keyboard.Key.esc:
+            # Stop listener
+            return False
+
+    x = keyboard.KeyCode.from_char('abc')
+
+    print('Start pressing keys:')
+    # Collect events until released
+    with keyboard.Listener(
+            on_press=on_press,
+            on_release=on_release) as listener:
+        listener.join()
+
+    # ...or, in a non-blocking fashion:
+    listener = keyboard.Listener(
+        on_press=on_press,
+        on_release=on_release)
+    listener.start()
+
+
+
+    from pynput.keyboard import Key, Controller
+
+    keyboard = Controller()
+
+    # Press and release space
+    keyboard.press(Key.space)
+    keyboard.release(Key.space)
+
+    # Type a lower case A; this will work even if no key on the
+    # physical keyboard is labelled 'A'
+    keyboard.press('a')
+    keyboard.release('a')
+
+    # Type two upper case As
+    keyboard.press('A')
+    keyboard.release('A')
+    with keyboard.pressed(Key.shift):
+        keyboard.press('a')
+        keyboard.release('a')
+
+    # Type 'Hello World' using the shortcut type method
+    keyboard.type('Hello World')
